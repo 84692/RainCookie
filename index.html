@@ -22,28 +22,61 @@
       font-size: 18px;
       text-align: center;
       position: absolute;
-      top: 10px;
+      top: 100px;
       left: 50%;
       transform: translateX(-50%);
+    }
+
+    .counterBox {
+      display: inline-block;
+      background-color: rgba(255, 255, 255, 0.3);
+      padding: 5px 10px;
+      border-radius: 10px;
+    }
+
+    #loadingScreen, #welcomeScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+    }
+
+    #loadingScreen {
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 999;
+    }
+
+    #welcomeScreen {
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 998;
     }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
 </head>
 <body>
-  <div id="cookieCounter">Pontos: 0</div>
+  <div id="loadingScreen">Carregando...</div>
+  <div id="welcomeScreen" onclick="playRainAudio()">Bem-vindo! Clique para iniciar</div>
+  <div id="cookieCounter" class="counterBox">Clique no Cookie</div>
 
-  <audio id="rainAudio" loop volume="0.5">
+  <audio id="rainAudio" loop volume="0.90">
     <source src="https://soundbible.com/mp3/2_Minute_Thunderstorm-Mike_Koenig-574654058.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
+    
   </audio>
 
   <script>
     let pontos = 0;
     let cookieSize = 200;
-    let growthSpeed = 10;
-    let maxCookieSize = 300;
+    let growthSpeed = 1000;
+    let maxCookieSize = 220;
     let expanding = false;
     let currentTouches = [];
+    let resourcesLoaded = false;
 
     function preload() {
       cookieImage = loadImage('https://images.emojiterra.com/google/noto-emoji/unicode-15/color/512px/1f36a.png');
@@ -55,19 +88,22 @@
 
       // Inicia o som de chuva em loop
       let rainAudio = document.getElementById("rainAudio");
-      rainAudio.play();
+      rainAudio.volume = 0.90;
 
-      // Após dois segundos, dê outro play para garantir a reprodução
-      setTimeout(() => {
-        rainAudio.play();
-      }, 2000);
+      // Exibe a tela de carregamento
+      document.getElementById('loadingScreen').style.display = 'flex';
+
+      // Verifica se todos os recursos estão carregados
+      checkResourcesLoaded();
     }
 
     function draw() {
-      clear(); // Limpa o canvas a cada quadro para evitar sobreposição
-      background(0, 0, 0, 0); // Torna o fundo transparente para mostrar a imagem de plano de fundo
-      handleTouches();
-      animateCookie();
+      if (resourcesLoaded) {
+        clear(); // Limpa o canvas a cada quadro para evitar sobreposição
+        background(0, 0, 0, 0); // Torna o fundo transparente para mostrar a imagem de plano de fundo
+        handleTouches();
+        animateCookie();
+      }
     }
 
     function handleTouches() {
@@ -115,6 +151,23 @@
     function playSound() {
       let audio = new Audio('https://soundbible.com/mp3/Blop-Mark_DiAngelo-79054334.mp3');
       audio.play();
+    }
+
+    function checkResourcesLoaded() {
+      // Adicione aqui qualquer outra verificação de carregamento de recursos necessário
+      setTimeout(() => {
+        resourcesLoaded = true;
+        // Esconde a tela de carregamento e exibe a tela de boas-vindas
+        document.getElementById('loadingScreen').style.display = 'none';
+        document.getElementById('welcomeScreen').style.display = 'flex';
+      }, 2000); // Simulando um tempo de carregamento
+    }
+
+    function playRainAudio() {
+      // Inicia o som de chuva após clicar na tela de boas-vindas
+      document.getElementById("rainAudio").play();
+      // Esconde a tela de boas-vindas
+      document.getElementById('welcomeScreen').style.display = 'none';
     }
   </script>
 </body>
