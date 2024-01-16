@@ -17,7 +17,7 @@
       user-select: none; /* Impede a seleção de texto para evitar cópia */
     }
 
-    #cookieCounter {
+    #botaoCounter {
       color: white;
       font-size: 18px;
       text-align: center;
@@ -62,24 +62,24 @@
 <body>
   <div id="loadingScreen">Carregando...</div>
   <div id="welcomeScreen" onclick="playRainAudio()">Bem-vindo! Clique para iniciar</div>
-  <div id="cookieCounter" class="counterBox">Clique no Cookie</div>
+  <div id="botaoCounter" class="counterBox">Clique no Botão</div>
 
-  <audio id="rainAudio" loop volume="0.90">
+  <audio id="rainAudio" loop volume="1.0">
     <source src="https://soundbible.com/mp3/2_Minute_Thunderstorm-Mike_Koenig-574654058.mp3" type="audio/mpeg">
     
   </audio>
 
   <script>
     let pontos = 0;
-    let cookieSize = 200;
+    let botaoSize = 200;
     let growthSpeed = 1000;
-    let maxCookieSize = 220;
+    let maxBotaoSize = 320;
     let expanding = false;
     let currentTouches = [];
     let resourcesLoaded = false;
 
     function preload() {
-      cookieImage = loadImage('https://images.emojiterra.com/google/noto-emoji/unicode-15/color/512px/1f36a.png');
+      botaoImage = loadImage('https://i.imgur.com/o2pS3LH.gif');
     }
 
     function setup() {
@@ -88,7 +88,7 @@
 
       // Inicia o som de chuva em loop
       let rainAudio = document.getElementById("rainAudio");
-      rainAudio.volume = 0.90;
+      rainAudio.volume = 1.0; // Volume 100%
 
       // Exibe a tela de carregamento
       document.getElementById('loadingScreen').style.display = 'flex';
@@ -102,7 +102,7 @@
         clear(); // Limpa o canvas a cada quadro para evitar sobreposição
         background(0, 0, 0, 0); // Torna o fundo transparente para mostrar a imagem de plano de fundo
         handleTouches();
-        animateCookie();
+        animateBotao();
       }
     }
 
@@ -111,32 +111,32 @@
         let touch = touches[i];
         let d = dist(touch.x, touch.y, width / 2, height / 2);
 
-        if (d < cookieSize / 2 && !currentTouches.includes(touch.id)) {
-          playSound(); // Adiciona a chamada para tocar o som quando o cookie é clicado
+        if (d < botaoSize / 2 && !currentTouches.includes(touch.id)) {
+          playSound(); // Adiciona a chamada para tocar o som quando o botao é clicado
           pontos++;
           expanding = true;
           currentTouches.push(touch.id);
-          document.getElementById('cookieCounter').innerText = `Pontos: ${pontos}`;
+          document.getElementById('botaoCounter').innerText = `Pontos: ${pontos}`;
         }
       }
     }
 
-    function animateCookie() {
+    function animateBotao() {
       push(); // Salva o estado atual da transformação
       translate(width / 2, height / 2); // Move o ponto de origem para o centro
       if (expanding) {
-        cookieSize += growthSpeed;
-        if (cookieSize > maxCookieSize) {
-          cookieSize = maxCookieSize;
+        botaoSize += growthSpeed;
+        if (botaoSize > maxBotaoSize) {
+          botaoSize = maxBotaoSize;
           expanding = false;
         }
       } else {
-        cookieSize -= 5;
-        if (cookieSize < 200) {
-          cookieSize = 200;
+        botaoSize -= 5;
+        if (botaoSize < 200) {
+          botaoSize = 200;
         }
       }
-      image(cookieImage, 0, 0, cookieSize, cookieSize);
+      image(botaoImage, 0, 0, botaoSize, botaoSize);
       pop(); // Restaura o estado da transformação
     }
 
@@ -150,6 +150,7 @@
 
     function playSound() {
       let audio = new Audio('https://soundbible.com/mp3/Blop-Mark_DiAngelo-79054334.mp3');
+      audio.volume = 0.2; // Volume 40%
       audio.play();
     }
 
